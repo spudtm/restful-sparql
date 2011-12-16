@@ -1,50 +1,90 @@
-package uk.ac.dotrural.irp.restful.resources;
+package uk.ac.dotrural.irp.sparql.restful.services;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
 import org.openjena.fuseki.http.UpdateRemote;
 
-import uk.ac.dotrural.irp.Constants;
-import uk.ac.dotrural.irp.restful.models.jaxb.input.Query;
-import uk.ac.dotrural.irp.restful.models.jaxb.input.ServiceInitialiser;
-import uk.ac.dotrural.irp.restful.models.jaxb.output.SystemMessage;
-import uk.ac.dotrural.irp.restful.resources.support.reporters.ExceptionReporter;
+import uk.ac.dotrural.irp.sparql.restful.Constants;
+import uk.ac.dotrural.irp.sparql.restful.models.jaxb.input.Query;
+import uk.ac.dotrural.irp.sparql.restful.models.jaxb.input.ServiceInitialiser;
+import uk.ac.dotrural.irp.sparql.restful.models.jaxb.output.EndpointInfo;
+import uk.ac.dotrural.irp.sparql.restful.models.jaxb.output.SystemMessage;
+import uk.ac.dotrural.irp.sparql.restful.resources.support.reporters.ExceptionReporter;
 
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.sparql.resultset.JSONOutput;
 import com.hp.hpl.jena.update.UpdateRequest;
 
-public abstract class RESTFulSPARQL 
+public class SPARQLEndpoint
 {
-    private static String sparql_framework;
-    private static String serviceURI;
-    private static String updateURI;
-    private static String queryURI;
-    
-    @Context 
+    private String sparql_framework;
+    private String serviceURI;
+    private String updateURI;
+    private String queryURI;
     private UriInfo uriInfo;
-    
-    public RESTFulSPARQL()
+        
+    public SPARQLEndpoint()
+    {}
+
+    public String getSparql_framework()
     {
-      System.setProperty("http.proxyHost", "proxy.abdn.ac.uk");
-      System.setProperty("http.proxyPort", "8080");
-      System.setProperty("http.nonProxyHosts", "localhost|127.0.0.1");
+      return sparql_framework;
     }
 
-    @POST
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-    @Path("init")
-    public SystemMessage init(ServiceInitialiser si)
+    public void setSparql_framework(String sparql_framework)
+    {
+      this.sparql_framework = sparql_framework;
+    }
+
+    public String getServiceURI()
+    {
+      return serviceURI;
+    }
+
+    public void setServiceURI(String serviceURI)
+    {
+      this.serviceURI = serviceURI;
+    }
+
+    public String getUpdateURI()
+    {
+      return updateURI;
+    }
+
+    public void setUpdateURI(String updateURI)
+    {
+      this.updateURI = updateURI;
+    }
+
+    public String getQueryURI()
+    {
+      return queryURI;
+    }
+
+    public void setQueryURI(String queryURI)
+    {
+      this.queryURI = queryURI;
+    }
+
+    public UriInfo getUriInfo()
+    {
+      return uriInfo;
+    }
+
+    public void setUriInfo(UriInfo uriInfo)
+    {
+      this.uriInfo = uriInfo;
+    }
+
+    public SystemMessage init(UriInfo uriInfo, ServiceInitialiser si)
     {      
+      if(uriInfo == null)
+        throw new ExceptionReporter(new NullPointerException("Initialising error. Context 'UriInfo' missing."));
+      
+      this.uriInfo = uriInfo;
+      
+      
       if(si == null)
         throw new ExceptionReporter(new NullPointerException("No initialising parameters given."));
       
@@ -95,14 +135,10 @@ public abstract class RESTFulSPARQL
           throw new ExceptionReporter(new NullPointerException(String.format("Peculiar base URI '%s'",uriInfo.getBaseUri().toString())));
       }
       
-      throw new ExceptionReporter(new NullPointerException(RESTFulSPARQL.class.getSimpleName() + 
+      throw new ExceptionReporter(new NullPointerException(SPARQLEndpoint.class.getSimpleName() + 
                                                            " -> SPARQL endpoint is not given."));
     }
 
-    @POST
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-    @Path("update")
     public void update(Query query)
     {
       if(sparql_framework.equals(Constants.JOSEKI))
@@ -130,11 +166,7 @@ public abstract class RESTFulSPARQL
       UpdateRemote.execute(ur, updateURI);
     }
     
-    @POST
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-    @Path("query")
-    public String query(Query query) 
+    public ResultSet query(Query query) 
     {
       if(serviceURI == null)
         throw new ExceptionReporter(new NullPointerException("Service MUST be initialised with a SPARQL endpoint."));
@@ -151,9 +183,18 @@ public abstract class RESTFulSPARQL
         
       QueryExecution queryExecution = QueryExecutionFactory.sparqlService(queryURI, sQuery);
       ResultSet results = queryExecution.execSelect();
-      JSONOutput json = new JSONOutput();
-      String jsonResults = json.asString(results);
   
-      return jsonResults;
+      return results;
+    }
+    
+    public EndpointInfo info()
+    {
+      EndpointInfo endpointInfo = new EndpointInfo();
+      endpointInfo.setServiceURI(this.getServiceURI());
+      endpointInfo.setSparql_framework(this.getSparql_framework());
+      endpointInfo.setQueryURI(this.getQueryURI());
+      endpointInfo.setUpdateURI(this.getUpdateURI());
+      
+      return endpointInfo;
     }
 }

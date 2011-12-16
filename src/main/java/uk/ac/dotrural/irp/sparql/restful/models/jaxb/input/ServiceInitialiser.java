@@ -1,4 +1,4 @@
-package uk.ac.dotrural.irp.restful.models.jaxb.input;
+package uk.ac.dotrural.irp.sparql.restful.models.jaxb.input;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

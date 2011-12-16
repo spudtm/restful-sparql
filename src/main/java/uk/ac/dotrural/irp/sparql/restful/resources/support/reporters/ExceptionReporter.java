@@ -1,4 +1,4 @@
-package uk.ac.dotrural.irp.restful.resources.support.reporters;
+package uk.ac.dotrural.irp.sparql.restful.resources.support.reporters;
 
 public class ExceptionReporter extends RuntimeException
 {

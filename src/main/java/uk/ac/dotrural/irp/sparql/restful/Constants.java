@@ -1,4 +1,4 @@
-package uk.ac.dotrural.irp;
+package uk.ac.dotrural.irp.sparql.restful;
 
 public class Constants
 {

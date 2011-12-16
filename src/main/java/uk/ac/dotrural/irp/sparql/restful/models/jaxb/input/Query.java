@@ -1,4 +1,4 @@
-package uk.ac.dotrural.irp.restful.models.jaxb.input;
+package uk.ac.dotrural.irp.sparql.restful.models.jaxb.input;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -7,6 +7,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Query
 {
   private String query;
+  
+  public Query()
+  {}
+  
+  public Query(String query)
+  {
+    this.query = query;
+  }
 
   @XmlElement(name="query")
   public String getQuery()

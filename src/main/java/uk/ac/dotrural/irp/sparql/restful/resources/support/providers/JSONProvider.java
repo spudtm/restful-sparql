@@ -1,4 +1,4 @@
-package uk.ac.dotrural.irp.restful.resources.support.providers;
+package uk.ac.dotrural.irp.sparql.restful.resources.support.providers;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
@@ -6,8 +6,8 @@ import javax.xml.bind.JAXBContext;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.dotrural.irp.restful.models.jaxb.input.Query;
-import uk.ac.dotrural.irp.restful.models.jaxb.input.ServiceInitialiser;
+import uk.ac.dotrural.irp.sparql.restful.models.jaxb.input.Query;
+import uk.ac.dotrural.irp.sparql.restful.models.jaxb.input.ServiceInitialiser;
 
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.api.json.JSONJAXBContext;

@@ -15,7 +15,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package uk.ac.dotrural.irp.restful.resources.support.providers;
+package uk.ac.dotrural.irp.sparql.restful.resources.support.providers;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -28,7 +28,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.dotrural.irp.restful.resources.support.reporters.ExceptionReporter;
+import uk.ac.dotrural.irp.sparql.restful.resources.support.reporters.ExceptionReporter;
 
 @Component
 @Provider
